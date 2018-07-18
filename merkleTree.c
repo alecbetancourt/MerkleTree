@@ -79,10 +79,17 @@ void addNode() {
 
 }
 
-void findHash() {
-    char finalHash[32];
-    //if both children of a node are null, set node to null
-    //if only one child is null, set parent to the hash of the non null child concatenated with a copy of itself
+void insertBlankNodes(int nower) {
+
+}
+
+void insertHashNodes(int fileCount) { //also pass array/arraylist of hashes as parameter
+
+}
+
+char * generateFinalHash() {
+    char finalHash[33];
+    //get final hash and return as string
 }
 
 int main() {
@@ -91,12 +98,15 @@ int main() {
     char *fileData;
     char inputFileName[256];
     long inputFileSize;
+    int fileCount = 0;
+    struct node head;
+    int power = 0;
 
     while (menu) {
         printf("Enter your option:\n1. Add node to tree\n2. Generate final hash\n3. Wipe Tree\n4. Exit");
         scanf("%d", &choice);
         if (choice == 1) {
-            printf("Enter the name of the file you'd like to add:");
+            printf("Enter the path to the file you'd like to add:");
             scanf("%s",inputFileName);
             FILE *inputFile = fopen(inputFileName, "rb");
             fseek(inputFile, 0, SEEK_END);
@@ -105,6 +115,7 @@ int main() {
             fileData = malloc(inputFileSize * (sizeof(char)));
             fread(fileData, sizeof(char), inputFileSize, inputFile);
             fclose(inputFile);
+            fileCount++;
             //file_contents = malloc((input_file_size + 1) * (sizeof(char)));
             //fread(file_contents, sizeof(char), input_file_size, input_file);
             //fclose(input_file);
@@ -113,9 +124,14 @@ int main() {
         else if (choice == 2) {
             size_t numberLeaves = *(&fileData + 1) - fileData;
             //find n, the smallest power of 2 > numberLeaves
+            while (2^power < fileCount) {
+                power++;
+            }
             //fill tree with 2^(n+1)-1 non leaf nodes
-            //
-            printf("Final hash of tree is:");
+            insertBlankNodes(power);
+            //insert hashes as bottom layer of nodes
+            //insertHashNodes(fileCount, list);
+            printf("Final hash of tree is: %s", generateFinalHash());
         }
         else if (choice == 3) {
             //wipeTree();
