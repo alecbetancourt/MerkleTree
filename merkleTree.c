@@ -82,6 +82,8 @@ insertNode(struct node head, char* data, int maxDepth) {
         //head left = newNode(data)
     //else if head->right == null && maxDepth != 0
         //head right = newNode(data)
+    //else if maxDepth = 0
+        //return
     //else
         //insertNode(head->left, data, maxDepth - 1)
         //insertNode(head->right, data, maxDepth - 1)
@@ -89,12 +91,12 @@ insertNode(struct node head, char* data, int maxDepth) {
 
 void insertBlankNodes(struct node head, int nower) {
     //for (int i = 0; i < 2^(power+1)-1; i++)
-    //insertNode(head, NULL, power)
+    //insertNode(head, NULL, power-1)
 }
 
 void insertHashNodes(struct node head, int power) { //also pass array/arraylist of hashes as parameter; change fileCount to hashArray.length()
     //for (int i = 0; i < fileCount; i++)
-    //insertNode(head, hashArray[i], power + 1)
+    //insertNode(head, hashArray[i], power)
 }
 
 char * hash(char * msg) {
