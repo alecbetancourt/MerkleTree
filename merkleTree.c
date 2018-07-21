@@ -75,21 +75,68 @@ struct node* newNode(char *data)
     return(node);
 }
 
-void addNode() {
 
+insertNode(struct node head, char* data, int maxDepth) {
+    //do level order traversal until you find an empty space
+    //if head->left == null && maxDepth != 0
+        //head left = newNode(data)
+    //else if head->right == null && maxDepth != 0
+        //head right = newNode(data)
+    //else
+        //insertNode(head->left, data, maxDepth - 1)
+        //insertNode(head->right, data, maxDepth - 1)
 }
 
-void insertBlankNodes(int nower) {
-
+void insertBlankNodes(struct node head, int nower) {
+    //for (int i = 0; i < 2^(power+1)-1; i++)
+    //insertNode(head, NULL, power)
 }
 
-void insertHashNodes(int fileCount) { //also pass array/arraylist of hashes as parameter
-
+void insertHashNodes(struct node head, int power) { //also pass array/arraylist of hashes as parameter; change fileCount to hashArray.length()
+    //for (int i = 0; i < fileCount; i++)
+    //insertNode(head, hashArray[i], power + 1)
 }
 
-char * generateFinalHash() {
-    char finalHash[33];
-    //get final hash and return as string
+char * hash(char * msg) {
+    //function that uses md5(msg, len) and converts outputs to a single hash that's returned as a string
+    //size_t len = strlen(msg);
+    //md5(msg, len)
+    /*
+    char digest[33];
+    //var char digest[16] := h0 append h1 append h2 append h3 //(Output is in little-endian)
+    uint8_t *p;
+
+    // display result
+    p=(uint8_t *)&h0;
+    //printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h0);
+    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h0);
+    sprintf(digest + strlen(digest), "-%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h0);
+    //sprintf(digest + strlen(digest), "%x", *p);
+
+    p=(uint8_t *)&h1;
+    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h1);
+    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h1);
+
+    p=(uint8_t *)&h2;
+    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h2);
+    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h2);
+
+    p=(uint8_t *)&h3;
+    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h3);
+    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x", p[0], p[1], p[2], p[3], h3);
+    puts("");
+
+    printf("%s", digest);
+    */
+}
+
+void generateHashTree(struct node head) {
+    //if left->data == null
+    //generateFinalHash(head->left)
+    //if right->data == null
+    //generateFinalHash(head->right)
+    //else
+    //head->data = hash(left->data+right->data))
 }
 
 int main() {
@@ -120,18 +167,23 @@ int main() {
             //fread(file_contents, sizeof(char), input_file_size, input_file);
             //fclose(input_file);
             //file_contents[input_file_size] = 0;
+
+            //dataList[i] = hash(fileData, length)
+            //i++
         }
         else if (choice == 2) {
-            size_t numberLeaves = *(&fileData + 1) - fileData;
-            //find n, the smallest power of 2 > numberLeaves
+            //struct node head = newNode(NULL);
+            //size_t numberLeaves = *(&fileData + 1) - fileData;
+            //find n, the smallest power of 2 > fileCount
             while (2^power < fileCount) {
                 power++;
             }
             //fill tree with 2^(n+1)-1 non leaf nodes
-            insertBlankNodes(power);
+            //insertBlankNodes(head, power);
             //insert hashes as bottom layer of nodes
-            //insertHashNodes(fileCount, list);
-            printf("Final hash of tree is: %s", generateFinalHash());
+            //insertHashNodes(head, power, list);
+            //generateHashTree(head)
+            //printf("Final hash of t0ree is: %s", head->data);
         }
         else if (choice == 3) {
             //wipeTree();
@@ -158,7 +210,7 @@ int main() {
     md5(msg, len);
     // }
 
-    char digest[100];
+    char digest[100] = "";
     //var char digest[16] := h0 append h1 append h2 append h3 //(Output is in little-endian)
     uint8_t *p;
 
@@ -182,6 +234,6 @@ int main() {
     sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x", p[0], p[1], p[2], p[3], h3);
     puts("");
 
-    printf("%s", digest);
+    printf("Digest: %s aaaa", digest);
     return 0;
 }
