@@ -53,16 +53,14 @@ int main() {
 }
 */
 
-struct node
-{
+struct node {
     //store either filename (max 255 char) or hash (32 char)
     char *data;
     struct node *left;
     struct node *right;
 };
 
-struct node* newNode(char *data)
-{
+struct node* newNode(char *data) {
     // Allocate memory for new node
     struct node* node = (struct node*)malloc(sizeof(struct node));
 
@@ -76,25 +74,26 @@ struct node* newNode(char *data)
 }
 
 
-insertNode(struct node head, char* data, int maxDepth) {
+void insertNode(struct node *head, char *data, int maxDepth) {
     //do level order traversal until you find an empty space
-    //if head->left == null && maxDepth != 0
-        //head left = newNode(data)
-    //else if head->right == null && maxDepth != 0
-        //head right = newNode(data)
-    //else if maxDepth = 0
-        //return
-    //else
-        //insertNode(head->left, data, maxDepth - 1)
-        //insertNode(head->right, data, maxDepth - 1)
+    if (head->left == NULL && maxDepth != 0)
+        head->left = newNode(data);
+    else if (head->right == NULL && maxDepth != 0)
+        head->right = newNode(data);
+    else if (maxDepth == 0)
+        return;
+    else {
+        insertNode(head->left, data, maxDepth - 1);
+        insertNode(head->right, data, maxDepth - 1);
+    }
 }
 
-void insertBlankNodes(struct node head, int nower) {
-    //for (int i = 0; i < 2^(power+1)-1; i++)
-    //insertNode(head, NULL, power-1)
+void insertBlankNodes(struct node * head, int power) {
+    for (int i = 0; i < 2^(power+1)-1; i++)
+        insertNode(head, NULL, power-1);
 }
 
-void insertHashNodes(struct node head, int power) { //also pass array/arraylist of hashes as parameter; change fileCount to hashArray.length()
+void insertHashNodes(struct node * head, int power, const char *hashes[100]) { //also pass array/arraylist of hashes as parameter; change fileCount to hashArray.length()
     //for (int i = 0; i < fileCount; i++)
     //insertNode(head, hashArray[i], power)
 }
@@ -102,43 +101,47 @@ void insertHashNodes(struct node head, int power) { //also pass array/arraylist 
 char * hash(char * msg) {
     //function that uses md5(msg, len) and converts outputs to a single hash that's returned as a string
     //size_t len = strlen(msg);
-    //md5(msg, len)
+    //md5(msg, len);
     /*
     char digest[33];
-    //var char digest[16] := h0 append h1 append h2 append h3 //(Output is in little-endian)
     uint8_t *p;
 
     // display result
     p=(uint8_t *)&h0;
-    //printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h0);
-    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h0);
-    sprintf(digest + strlen(digest), "-%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h0);
-    //sprintf(digest + strlen(digest), "%x", *p);
+    sprintf(digest + strlen(digest), "-%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3]);
 
     p=(uint8_t *)&h1;
-    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h1);
-    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h1);
+    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3]);
 
     p=(uint8_t *)&h2;
-    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h2);
-    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h2);
+    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3]);
 
     p=(uint8_t *)&h3;
-    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h3);
-    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x", p[0], p[1], p[2], p[3], h3);
+    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x", p[0], p[1], p[2], p[3]);
     puts("");
 
     printf("%s", digest);
     */
 }
 
-void generateHashTree(struct node head) {
-    //if left->data == null
-    //generateFinalHash(head->left)
-    //if right->data == null
-    //generateFinalHash(head->right)
-    //else
-    //head->data = hash(left->data+right->data))
+void generateHashTree(struct node * head) {
+    //if both left & right are null, you're at a leaf
+    if (head->left == NULL && head->right == NULL)
+        return;
+    //attempt to generate the hashes of the two children nodes of the head
+    generateHashTree(head->left);
+    generateHashTree(head->right);
+    //if both still null after trying, node is parent to 2 empty nodes
+    if (head->left->data == NULL && head->right->data == NULL)
+        return;
+    //if only one is still null, node is parent to a hash node and a non hash node
+    else if (head->left->data == NULL)
+        head->data = hash(strcat(head->right->data, head->right->data));
+    else if (head->right->data == NULL)
+        head->data = hash(strcat(head->left->data, head->left->data));
+    //if neither is null, node is parent to two hash nodes
+    else
+        head->data = hash(strcat(head->left->data, head->right->data));
 }
 
 int main() {
@@ -150,6 +153,8 @@ int main() {
     int fileCount = 0;
     struct node head;
     int power = 0;
+    //figure out how to make this scaleable. arraylist?
+    const char *hashes[100];
 
     while (menu) {
         printf("Enter your option:\n1. Add node to tree\n2. Generate final hash\n3. Wipe Tree\n4. Exit");
@@ -170,22 +175,22 @@ int main() {
             //fclose(input_file);
             //file_contents[input_file_size] = 0;
 
-            //dataList[i] = hash(fileData, length)
-            //i++
+            hashes[i] = hash(fileData);
+            i++;
         }
         else if (choice == 2) {
-            //struct node head = newNode(NULL);
-            //size_t numberLeaves = *(&fileData + 1) - fileData;
+            struct node *headNode = newNode(NULL);
+            size_t numberLeaves = *(&fileData + 1) - fileData;
             //find n, the smallest power of 2 > fileCount
             while (2^power < fileCount) {
                 power++;
             }
             //fill tree with 2^(n+1)-1 non leaf nodes
-            //insertBlankNodes(head, power);
+            insertBlankNodes(headNode, power);
             //insert hashes as bottom layer of nodes
-            //insertHashNodes(head, power, list);
-            //generateHashTree(head)
-            //printf("Final hash of t0ree is: %s", head->data);
+            insertHashNodes(headNode, power, hashes);
+            generateHashTree(headNode);
+            printf("Final hash of tree is: %s", headNode->data);
         }
         else if (choice == 3) {
             //wipeTree();
