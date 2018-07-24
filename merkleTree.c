@@ -1,66 +1,19 @@
 #include "md5.h"
 #include <stdbool.h>
-
-/*
-int main() {
-    //ask how many data blocks
-    //make method to find tree height n (such that 2^n > |data blocks|)
-    //construct bulk of tree using 'hash nodes' - build head and then add 2^(n+1)-1 hash nodes
-    //make final layer data nodes - add #data blocks nodes based on user input
-    //hash nodes: contain hash and children
-    //data nodes: contain file names and children
-    //write recursive function to compute hash of tree, if both children of a node are null, set node to null
-    //if only one child is null, set parent to the hash of the non null child concatenated with a copy of itself
-    //print tree hash to user
-
-    char string[] = "string";
-    char *argc = string[1];
+#include <string.h>
 
 
-    if (argc < 2) {
-        printf("usage: %s 'string'\n", argv[0]);
-        return 1;
-    }
-
-    char *msg = argv[1];
-    size_t len = strlen(msg);
-
-    // benchmark
-    // int i;
-    // for (i = 0; i < 1000000; i++) {
-    md5(msg, len);
-    // }
-
-    //var char digest[16] := h0 append h1 append h2 append h3 //(Output is in little-endian)
-    uint8_t *p;
-
-    // display result
-
-    p=(uint8_t *)&h0;
-    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h0);
-
-    p=(uint8_t *)&h1;
-    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h1);
-
-    p=(uint8_t *)&h2;
-    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h2);
-
-    p=(uint8_t *)&h3;
-    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h3);
-    puts("");
-
-    return 0;
-}
-*/
-
-struct node {
+struct node
+{
     //store either filename (max 255 char) or hash (32 char)
     char *data;
+    char *hashvalue;
     struct node *left;
     struct node *right;
 };
 
-struct node* newNode(char *data) {
+struct node* newNode(char *data)
+{
     // Allocate memory for new node
     struct node* node = (struct node*)malloc(sizeof(struct node));
 
@@ -74,74 +27,109 @@ struct node* newNode(char *data) {
 }
 
 
-void insertNode(struct node *head, char *data, int maxDepth) {
+insertNode(struct node head, char* data, int maxDepth) {
     //do level order traversal until you find an empty space
-    if (head->left == NULL && maxDepth != 0)
-        head->left = newNode(data);
-    else if (head->right == NULL && maxDepth != 0)
-        head->right = newNode(data);
-    else if (maxDepth == 0)
-        return;
-    else {
-        insertNode(head->left, data, maxDepth - 1);
-        insertNode(head->right, data, maxDepth - 1);
-    }
+    //if head->left == null && maxDepth != 0
+        //head left = newNode(data)
+    //else if head->right == null && maxDepth != 0
+        //head right = newNode(data)
+    //else
+        //insertNode(head->left, data, maxDepth - 1)
+        //insertNode(head->right, data, maxDepth - 1)
 }
 
-void insertBlankNodes(struct node * head, int power) {
-    for (int i = 0; i < 2^(power+1)-1; i++)
-        insertNode(head, NULL, power-1);
+void insertBlankNodes(struct node head, int nower) {
+    //for (int i = 0; i < 2^(power+1)-1; i++)
+    //insertNode(head, NULL, power)
 }
 
-void insertHashNodes(struct node * head, int power, const char *hashes[100]) { //also pass array/arraylist of hashes as parameter; change fileCount to hashArray.length()
+void insertHashNodes(struct node head, int power) { //also pass array/arraylist of hashes as parameter; change fileCount to hashArray.length()
     //for (int i = 0; i < fileCount; i++)
-    //insertNode(head, hashArray[i], power)
+    //insertNode(head, hashArray[i], power + 1)
 }
 
-char * hash(char * msg) {
+char * hashNode(char * msg, struct node* n) {
     //function that uses md5(msg, len) and converts outputs to a single hash that's returned as a string
-    //size_t len = strlen(msg);
-    //md5(msg, len);
-    /*
-    char digest[33];
+    size_t len = strlen(msg);
+    md5(msg, len);
+
+    char digest[100];
+    //var char digest[16] := h0 append h1 append h2 append h3 //(Output is in little-endian)
     uint8_t *p;
 
     // display result
     p=(uint8_t *)&h0;
-    sprintf(digest + strlen(digest), "-%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3]);
+    //printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h0);
+    //printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h0);
+    sprintf(digest + strlen(digest), "-%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h0);
+    //sprintf(digest + strlen(digest), "%x", *p);
 
     p=(uint8_t *)&h1;
-    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3]);
+    //printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h1);
+    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h1);
 
     p=(uint8_t *)&h2;
-    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3]);
+    //printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h2);
+    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h2);
 
     p=(uint8_t *)&h3;
-    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x", p[0], p[1], p[2], p[3]);
-    puts("");
+    //printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h3);
+    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x", p[0], p[1], p[2], p[3], h3);
+    //puts("");
 
-    printf("%s", digest);
-    */
+    //printf("%s", digest);
+
+    n->hashvalue=digest;
+    n->data=digest;
+
 }
-
-void generateHashTree(struct node * head) {
-    //if both left & right are null, you're at a leaf
-    if (head->left == NULL && head->right == NULL)
-        return;
-    //attempt to generate the hashes of the two children nodes of the head
-    generateHashTree(head->left);
-    generateHashTree(head->right);
-    //if both still null after trying, node is parent to 2 empty nodes
-    if (head->left->data == NULL && head->right->data == NULL)
-        return;
-    //if only one is still null, node is parent to a hash node and a non hash node
-    else if (head->left->data == NULL)
-        head->data = hash(strcat(head->right->data, head->right->data));
-    else if (head->right->data == NULL)
-        head->data = hash(strcat(head->left->data, head->left->data));
-    //if neither is null, node is parent to two hash nodes
+/******
+* Goal is to recursively build the tree from the leaves to the root.
+*
+******/
+void generateHashTree(struct node* arr[], int size) {
+    //if left->data == null
+    //generateFinalHash(head->left)
+    //if right->data == null
+    //generateFinalHash(head->right)
+    //else
+    //head->data = hash(left->data+right->data))
+    int nextLayercount=0;
+    int index=0, ind=0;
+    struct node* currLayer[5000]={NULL};
+    if (size==1)
+    {
+        ;
+    }
     else
-        head->data = hash(strcat(head->left->data, head->right->data));
+    {
+        if (size%2==0) //Determine if there are an odd number of nodes on the passed layer
+    {
+        nextLayercount=size/2;
+    }
+    else
+    {
+        nextLayercount=(size/2)+1;
+    }
+    while (index<=nextLayercount)
+    {
+        struct node* first= arr[index];
+        struct node* second= arr[index];
+
+        currLayer[ind]=newNode(strcat(first->data,second->data));
+
+        struct node* here=currLayer[ind];
+        here->left=arr[index];
+        if ((index+1)<=size) //in case of odd sized trees
+        {
+            here->right=arr[index+1];
+        }
+        hashNode(here->data,here);
+        index+=2;
+        ind++;
+    }
+    generateHashTree(currLayer,ind); //recursive tree building
+    }
 }
 
 int main() {
@@ -153,11 +141,11 @@ int main() {
     int fileCount = 0;
     struct node head;
     int power = 0;
-    //figure out how to make this scaleable. arraylist?
-    const char *hashes[100];
+    struct node *arr[5000]={NULL}; //Holds an array of pointers to nodes;
+    int index=0;
 
     while (menu) {
-        printf("Enter your option:\n1. Add node to tree\n2. Generate final hash\n3. Wipe Tree\n4. Exit");
+        printf("Enter your option:\n1. Add node to tree\n2. Generate final hash\n3. Wipe Tree\n4. Exit\n");
         scanf("%d", &choice);
         if (choice == 1) {
             printf("Enter the path to the file you'd like to add:");
@@ -170,27 +158,30 @@ int main() {
             fread(fileData, sizeof(char), inputFileSize, inputFile);
             fclose(inputFile);
             fileCount++;
+
+            arr[index]=newNode(fileData);
+            index++;
             //file_contents = malloc((input_file_size + 1) * (sizeof(char)));
             //fread(file_contents, sizeof(char), input_file_size, input_file);
             //fclose(input_file);
             //file_contents[input_file_size] = 0;
 
-            hashes[i] = hash(fileData);
-            i++;
+            //dataList[i] = hash(fileData, length)
+            //i++
         }
         else if (choice == 2) {
-            struct node *headNode = newNode(NULL);
-            size_t numberLeaves = *(&fileData + 1) - fileData;
+            //struct node head = newNode(NULL);
+            //size_t numberLeaves = *(&fileData + 1) - fileData;
             //find n, the smallest power of 2 > fileCount
             while (2^power < fileCount) {
                 power++;
             }
             //fill tree with 2^(n+1)-1 non leaf nodes
-            insertBlankNodes(headNode, power);
+            //insertBlankNodes(head, power);
             //insert hashes as bottom layer of nodes
-            insertHashNodes(headNode, power, hashes);
-            generateHashTree(headNode);
-            printf("Final hash of tree is: %s", headNode->data);
+            //insertHashNodes(head, power, list);
+            //generateHashTree(head)
+            //printf("Final hash of t0ree is: %s", head->data);
         }
         else if (choice == 3) {
             //wipeTree();
@@ -198,6 +189,7 @@ int main() {
         else if (choice == 4) {
             //delete later
             menu = false;
+            exit(0);
             //return 0;
         }
         else {
@@ -224,22 +216,22 @@ int main() {
     // display result
     p=(uint8_t *)&h0;
     //printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h0);
-    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h0);
-    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h0);
+    //printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h0);
+    //sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h0);
     //sprintf(digest + strlen(digest), "%x", *p);
 
     p=(uint8_t *)&h1;
-    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h1);
-    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h1);
+    //printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h1);
+    //sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h1);
 
     p=(uint8_t *)&h2;
-    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h2);
-    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h2);
+    //printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h2);
+    //sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h2);
 
     p=(uint8_t *)&h3;
-    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h3);
-    sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x", p[0], p[1], p[2], p[3], h3);
-    puts("");
+    //printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h3);
+    //sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x", p[0], p[1], p[2], p[3], h3);
+    //puts("");
 
     printf("Digest: %s aaaa", digest);
     return 0;
