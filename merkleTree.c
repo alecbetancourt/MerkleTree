@@ -59,25 +59,25 @@ char * hashNode(char * msg, struct node* n) {
 
     // display result
     p=(uint8_t *)&h0;
-    //printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h0);
-    //printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h0);
+    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h0);
+    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h0);
     sprintf(digest + strlen(digest), "-%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h0);
-    //sprintf(digest + strlen(digest), "%x", *p);
+    sprintf(digest + strlen(digest), "%x", *p);
 
     p=(uint8_t *)&h1;
-    //printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h1);
+    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h1);
     sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h1);
 
     p=(uint8_t *)&h2;
-    //printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h2);
+    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h2);
     sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x -", p[0], p[1], p[2], p[3], h2);
 
     p=(uint8_t *)&h3;
-    //printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h3);
+    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], h3);
     sprintf(digest + strlen(digest), "%2.2x - %2.2x - %2.2x - %2.2x", p[0], p[1], p[2], p[3], h3);
-    //puts("");
+    puts("");
 
-    //printf("%s", digest);
+    printf("%s", digest);
 
     n->hashvalue=digest;
     n->data=digest;
@@ -99,7 +99,9 @@ void generateHashTree(struct node* arr[], int size) {
     struct node* currLayer[5000]={NULL};
     if (size==1)
     {
-        ;
+        hashNode(arr[0]->data,arr[0]);
+        printf("\nThis is the final hash: \n");
+        printf("%s",arr[0]->hashvalue);
     }
     else
     {
@@ -117,7 +119,7 @@ void generateHashTree(struct node* arr[], int size) {
         struct node* second= arr[index];
 
         currLayer[ind]=newNode(strcat(first->data,second->data));
-
+        printf("\nadded a new node\n");
         struct node* here=currLayer[ind];
         here->left=arr[index];
         if ((index+1)<=size) //in case of odd sized trees
@@ -156,6 +158,7 @@ int main() {
             rewind(inputFile);
             fileData = malloc(inputFileSize * (sizeof(char)));
             fread(fileData, sizeof(char), inputFileSize, inputFile);
+            //printf("\n File data: %s\n",fileData);
             fclose(inputFile);
             fileCount++;
 
@@ -170,12 +173,13 @@ int main() {
             //i++
         }
         else if (choice == 2) {
+                generateHashTree(arr,fileCount);
             //struct node head = newNode(NULL);
             //size_t numberLeaves = *(&fileData + 1) - fileData;
             //find n, the smallest power of 2 > fileCount
-            while (2^power < fileCount) {
-                power++;
-            }
+            //while (2^power < fileCount) {
+            //    power++;
+            //}
             //fill tree with 2^(n+1)-1 non leaf nodes
             //insertBlankNodes(head, power);
             //insert hashes as bottom layer of nodes
@@ -236,3 +240,4 @@ int main() {
     printf("Digest: %s aaaa", digest);
     return 0;
 }
+
