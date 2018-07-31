@@ -139,7 +139,7 @@ void md5(uint8_t *initial_msg, size_t initial_len) {
             uint32_t temp = d;
             d = c;
             c = b;
-            printf("rotateLeft(%x + %x + %x + %x, %d)\n", a, f, k[i], w[g], r[i]);
+            //printf("rotateLeft(%x + %x + %x + %x, %d)\n", a, f, k[i], w[g], r[i]);
             b = b + LEFTROTATE((a + f + k[i] + w[g]), r[i]);
             a = temp;
 
