@@ -43,40 +43,17 @@ int insertNode(struct node *head, const char *data, int maxDepth) {
     }
 }
 
-/*
-void insertNode(struct node *head, const char *data, int maxDepth) {
-    //do level order traversal until you find an empty space
-    if (head->left == NULL && maxDepth != 0)
-        head->left = newNode(data);
-    else if (head->right == NULL && maxDepth != 0)
-        head->right = newNode(data);
-    else if (maxDepth == 0)
-        return;
-    else {
-        insertNode(head->left, data, maxDepth - 1);
-        insertNode(head->right, data, maxDepth - 1);
-    }
-}
-*/
-
-void insertBlankNodes(struct node * head, int power) {
-    for (int i = 0; i < (1 << (power-1)); i++)
-        insertNode(head, NULL, power);
-}
-
-void insertHashNodes(struct node * head, int power, const char *hashes[100], int fileCount) { //also pass array/arraylist of hashes as parameter; change fileCount to hashArray.length()
-    for (int i = 0; i < fileCount; i++)
-        insertNode(head, hashes[i], power+1);
-}
-
 char *hash(char * msg) {
     //function that uses md5(msg, len) and converts outputs to a single hash that's returned as a string
     size_t len = strlen(msg);
+    //printf("\nstr: %c\n", msg[len+1]);
+    //msg[len] = '\0';
     md5(msg, len);
 
     static char digest[33] = "";
+    memset(digest,0,sizeof(digest));
     uint8_t *p;
-
+    printf("\nDigest: %s\n", digest);
     // save result to digest
     p=(uint8_t *)&h0;
     sprintf(digest + strlen(digest), "%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3]);
@@ -97,54 +74,75 @@ char *hash(char * msg) {
     return digest;
 }
 
-void generateHashTree(struct node * head) {
-    //if head data isn't null, head already has hash and doesn't need to generate hash
-    if (head->data != NULL)
-        return;
-    //if both left & right are null, you're at a leaf
-    if (head->left == NULL && head->right == NULL)
-        return;
-    //attempt to generate the hashes of the two children nodes of the head
-    generateHashTree(head->left);
-    generateHashTree(head->right);
-    //if both still null after trying, node is parent to 2 empty nodes
-    if (head->left->data == NULL && head->right->data == NULL)
-        return;
-    //if only one is still null, node is parent to a hash node and a non hash node
-    else if (head->left->data == NULL)
-        head->data = head->right->data;
-        //head->data = hash(strcat(head->right->data, head->right->data));
-    else if (head->right->data == NULL)
-        head->data = head->left->data;
-        //head->data = hash(strcat(head->left->data, head->left->data));
-    //if neither is null, node is parent to two hash nodes
-    else
-        strcpy(head->data, hash(strcat(head->left->data, head->right->data)));
-        //head->data = hash(strcat(head->left->data, head->right->data));
-}
-
 //fc = 11;
 //p = 4; //2^4 = 16 leaves
 //actual numNodes = 21
 //calculated numNodes = 21
 void printTree(struct node *head) {
     printf("\n1:%s\n2:%s\n3:%s\n4:%s\n5:%s\n6:%s\n7:%s\n8:%s\n9:%s\n",
-    head->data,head->left->data,head->right->data,head->left->left->data, head->left->right->data,
-    head->right->left->data, head->right->right->data, head->left->left->left->data,head->left->left->right->data);
+           head->data,head->left->data,head->right->data,head->left->left->data, head->left->right->data,
+           head->right->left->data, head->right->right->data, head->left->left->left->data,head->left->left->right->data);
 }
+
+void generateHashTree(struct node * head) {
+    //printTree(head);
+    //if head data isn't null, head already has hash and doesn't need to generate hash
+    if (head->data != NULL) {
+        printf("BOUNCE");
+        return;
+    }
+    //if both left & right are null, you're at a leaf
+    //if (head->left == NULL && head->right == NULL)
+    //    return;
+    //attempt to generate the hashes of the two children nodes of the head
+    generateHashTree(head->left);
+    generateHashTree(head->right);
+    printf("BOUNCE BACK");
+    //if both still null after trying, node is parent to 2 empty nodes
+    //if (head->left->data == NULL && head->right->data == NULL)
+    //    return;
+    //if only one is still null, node is parent to a hash node and a non hash node
+    if (head->left->data == NULL) {
+        printf("LNULLSET");
+        head->data = head->right->data;
+        //head->data = hash(strcat(head->right->data, head->right->data));
+    }
+    else if (head->right->data == NULL) {
+        printf("RNULLSET");
+        head->data = head->left->data;
+        //head->data = hash(strcat(head->left->data, head->left->data));
+    }
+    //if neither is null, node is parent to two hash nodes
+    else {
+        printf("HASHING");
+        printf("\nL: %s", head->left->data);
+        printf("\nR: %s", head->right->data);
+        printf("LEFTRIGHT");
+        char tmp[100] = "";
+        strcat(tmp, head->left->data);
+        strcat(tmp, head->right->data);
+        head->data = hash(tmp);
+
+        //head->data = hash(strcat(head->left->data, head->right->data));
+        printf("FINISH HASHING");
+        //strcpy(head->data, hash(strcat(head->left->data, head->right->data)));
+        printf("PRINT STATEMENT: %s", head->data);
+    }
+}
+
 void buildTree(const char *hashes[100], int fileCount) { // might replace filecount with array.length and hashes with arraylist
-//instantiate a new head node for the tree
+    //instantiate a new head node for the tree
     struct node *head = newNode(NULL);
 
-//find the smallest power of 2 >= fileCount or the lowest level in the tree
+    //find the smallest power of 2 >= fileCount or the lowest level in the tree
     int power = 0;
     while ((1 << power) <= fileCount) {
         power++;
     }
 
-//find the number of leaves at the power level and the power - 1 level
-//these are the only places they can be on a balanced binary tree
-//int x = 0, y = pow(2, power-1);
+    //find the number of leaves at the power level and the power - 1 level
+    //these are the only places they can be on a balanced binary tree
+    //int x = 0, y = pow(2, power-1);
     int x = 0, y = (1 << (power - 1));
     int numNodes = 0;
     while (x <= (1 << (power-1)) && y >= 0) {
@@ -180,7 +178,7 @@ void buildTree(const char *hashes[100], int fileCount) { // might replace fileco
     printTree(head);
     generateHashTree(head);
     printTree(head);
-    printf("Final hash of tree is: %s", head->data);
+    printf("Final hash of tree is: %s\n", head->data);
 }
 
 //ins 2^p-1 max depth insert 2n max depth + 1
