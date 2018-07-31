@@ -1,0 +1,38 @@
+1:(null)
+2:(null)
+3:(null)
+4:(null)
+5:c4ca4238a0b923820dcc509a6f75849b
+6:c81e728d9d4c2f636f067f89cc14862c
+7:eccbc87e4b5ce2fe28308fd9f2a7baf3
+8:802d6f5e0cdd0081035e5adc166c6829
+9:97382b6b8222614ffdca9cc264bf6baf
+
+Digest: 1bdee5e04e1354c89ff50f7b41680ddb
+
+
+Digest: 345cf6489b22d151992af4cc88553d29
+
+
+Digest: cec97df69a76f0a6865547617098a044
+
+
+Digest: 32b8b344d5d25416d60c5df7b80efaaf
+
+
+
+1:32b8b344d5d25416d60c5df7b80efaaf
+2:32b8b344d5d25416d60c5df7b80efaaf
+3:32b8b344d5d25416d60c5df7b80efaaf
+4:32b8b344d5d25416d60c5df7b80efaaf
+5:c4ca4238a0b923820dcc509a6f75849b
+6:c81e728d9d4c2f636f067f89cc14862c
+7:eccbc87e4b5ce2fe28308fd9f2a7baf3
+8:802d6f5e0cdd0081035e5adc166c6829
+9:97382b6b8222614ffdca9cc264bf6baf
+Final hash of tree is: 32b8b344d5d25416d60c5df7b80efaaf
+Enter your option:
+1. Add node to tree
+2. Generate final hash
+3. Wipe Tree
+4. Exit
