@@ -68,8 +68,8 @@ char *hash(char * msg) {
     sprintf(digest + strlen(digest), "%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3]);
     //puts("");
 
-    digest[32] = '\0';
-    printf("\nMessage content:\n%s\n", msg);
+    digest[33] = '\0';
+    //printf("\nMessage content:\n%s\n", msg);
     printf("\nDigest: %s\n", digest);
     return digest;
 }
@@ -97,7 +97,7 @@ void generateHashTree(struct node * head) {
     //attempt to generate the hashes of the two children nodes of the head
     generateHashTree(head->left);
     generateHashTree(head->right);
-    printf("BOUNCE BACK");
+    //printf("BOUNCE BACK");
     //if both still null after trying, node is parent to 2 empty nodes
     //if (head->left->data == NULL && head->right->data == NULL)
     //    return;
@@ -114,19 +114,20 @@ void generateHashTree(struct node * head) {
     }
     //if neither is null, node is parent to two hash nodes
     else {
-        printf("HASHING");
-        printf("\nL: %s", head->left->data);
-        printf("\nR: %s", head->right->data);
-        printf("LEFTRIGHT");
+        //printf("\nHASHING\n");
+        //printf("\nL: %s", head->left->data);
+        //printf("\nR: %s", head->right->data);
+        //printf("\nLEFTRIGHT\n");
         char tmp[100] = "";
         strcat(tmp, head->left->data);
         strcat(tmp, head->right->data);
+        //printf("\n temp: %s\n",tmp);
         head->data = hash(tmp);
 
         //head->data = hash(strcat(head->left->data, head->right->data));
-        printf("FINISH HASHING");
+        //printf("\nFINISH HASHING\n");
         //strcpy(head->data, hash(strcat(head->left->data, head->right->data)));
-        printf("PRINT STATEMENT: %s", head->data);
+        printf("\nPRINT STATEMENT: %s\n", head->data);
     }
 }
 
@@ -393,3 +394,4 @@ int main() {
     return 0;
 }
 */
+
