@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1533223541 source:c:\users\james\desktop\take 5\main.c
+	<stdio.h>
+	<stdlib.h>
+	"md5.h"
+	<stdbool.h>
+	<string.h>
+
+1533066734 c:\users\james\desktop\take 5\md5.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdint.h>
+
